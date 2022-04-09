@@ -6,8 +6,13 @@
 <h:head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>Primefaces + Spring Boot</title>
+    <title>POS - Fredi Vázquez</title>
     <h:outputStylesheet library="webjars" name="primeflex/2.0.0/primeflex.min.css"/>
+    <style>
+        .ui-inputnumber .ui-inputfield, .ui-cell-editor-input .ui-inputfield {
+            width: 100%;
+        }
+    </style>
 </h:head>
 
 <h:body>
@@ -39,9 +44,7 @@
             <h:form id="form">
                 <p:growl id="messages" showDetail="true"/>
                 <p:dataTable id="dt-products" var="product" value="#{productView.products}" widgetVar="productsTable"
-                             filteredValue="#{productView.filteredProducts}"
-                             globalFilterFunction="#{productView.globalFilterFunction}" size="small"
-                             rowSelectMode="add" paginator="true" rows="10" paginatorPosition="bottom">
+                             editable="true" size="small" paginator="true" rows="10" paginatorPosition="bottom">
                     <f:facet name="header">
                         <p:commandButton value="New Product" icon="pi pi-plus" actionListener="#{productView.openNew}"
                                          update=":form:manage-product-content"
@@ -50,13 +53,30 @@
                         </p:commandButton>
                     </f:facet>
 
+                    <p:ajax event="rowEdit" listener="#{productView.onRowEdit}" update=":form:messages"/>
+                    <p:ajax event="rowEditCancel" listener="#{productView.onRowCancel}" update=":form:messages"/>
+
                     <p:column headerText="Product Code" sortBy="#{product.productCode}"
                               filterBy="#{product.productCode}">
-                        <h:outputText value="#{product.productCode}"/>
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{product.productCode}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText value="#{product.productCode}"/>
+                            </f:facet>
+                        </p:cellEditor>
                     </p:column>
 
                     <p:column headerText="Name" sortBy="#{product.productName}" filterBy="#{product.productName}">
-                        <h:outputText value="#{product.productName}"/>
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{product.productName}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText value="#{product.productName}"/>
+                            </f:facet>
+                        </p:cellEditor>
                     </p:column>
 
                     <p:column headerText="Category" sortBy="#{product.productCategory.categoryName}"
@@ -69,7 +89,18 @@
                                                itemLabel="#{category.categoryName}"/>
                             </p:selectOneMenu>
                         </f:facet>
-                        <h:outputText value="#{product.productCategory.categoryName}"/>
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{product.productCategory.categoryName}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:selectOneMenu value="#{product.productBrand.productBrandId}" style="width: 100%">
+                                    <f:selectItems value="#{productView.productCategories}" var="category"
+                                                   itemValue="${category.productCategoryId}"
+                                                   itemLabel="#{category.categoryName}"/>
+                                </p:selectOneMenu>
+                            </f:facet>
+                        </p:cellEditor>
                     </p:column>
 
                     <p:column headerText="Brand" sortBy="#{product.productBrand.brandName}"
@@ -82,27 +113,64 @@
                                                itemLabel="#{brand.brandName}"/>
                             </p:selectOneMenu>
                         </f:facet>
-                        <h:outputText value="#{product.productBrand.brandName}"/>
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{product.productBrand.brandName}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:selectOneMenu value="#{product.productBrand.productBrandId}" style="width: 100%">
+                                    <f:selectItems value="#{productView.productBrands}" var="brand"
+                                                   itemValue="${brand.productBrandId}"
+                                                   itemLabel="#{brand.brandName}"/>
+                                </p:selectOneMenu>
+                            </f:facet>
+                        </p:cellEditor>
                     </p:column>
 
                     <p:column headerText="Price Buy" sortBy="#{product.priceBuy}" filterBy="#{product.priceBuy}">
-                        <h:outputText value="#{product.priceBuy}" style="font-weight: 700">
-                            <f:convertNumber type="currency" currencySymbol="$"/>
-                        </h:outputText>
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{product.priceBuy}" style="font-weight: 700">
+                                    <f:convertNumber type="currency" currencySymbol="$"/>
+                                </h:outputText>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputNumber value="#{product.priceBuy}"
+                                               symbol=" MX" symbolPosition="s"
+                                               decimalSeparator="." thousandSeparator=","/>
+                            </f:facet>
+                        </p:cellEditor>
                     </p:column>
 
                     <p:column headerText="Price Sell" sortBy="#{product.priceSell}" filterBy="#{product.priceSell}">
-                        <h:outputText value="#{product.priceSell}" style="font-weight: 700">
-                            <f:convertNumber type="currency" currencySymbol="$"/>
-                        </h:outputText>
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{product.priceSell}" style="font-weight: 700">
+                                    <f:convertNumber type="currency" currencySymbol="$"/>
+                                </h:outputText>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputNumber value="#{product.priceSell}"
+                                               symbol=" MX" symbolPosition="s"
+                                               decimalSeparator="." thousandSeparator=","/>
+                            </f:facet>
+                        </p:cellEditor>
                     </p:column>
 
                     <p:column headerText="Units in Stock" sortBy="#{product.unitsInStock}"
                               filterBy="#{product.unitsInStock}">
-                        <h:outputText value="#{product.unitsInStock}"/>
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{product.unitsInStock}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:spinner min="0" value="#{product.unitsInStock}" style="width: 100%"/>
+                            </f:facet>
+                        </p:cellEditor>
                     </p:column>
 
-                    <p:column headerText="Status" sortBy="#{product.status}" filterBy="#{product.status}" filterMatchMode="exact">
+                    <p:column headerText="Status" sortBy="#{product.status}" filterBy="#{product.status}"
+                              filterMatchMode="exact">
                         <f:facet name="filter">
                             <p:selectOneMenu onchange="PF('productsTable').filter()" style="width: 100%">
                                 <f:selectItem itemLabel="All" itemValue="#{null}" noSelectionOption="true"/>
@@ -111,16 +179,23 @@
                                                itemLabel="#{status.text}"/>
                             </p:selectOneMenu>
                         </f:facet>
-                        <p:tag value="#{product.status.text}" severity="#{productView.statusSeverity(product.status)}"/>
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <p:tag value="#{product.status.text}"
+                                       severity="#{productView.statusSeverity(product.status)}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:selectOneMenu value="#{product.status}" style="width: 100%">
+                                    <f:selectItems value="#{productView.statuses}" var="status"
+                                                   itemValue="${status}"
+                                                   itemLabel="#{status.text}"/>
+                                </p:selectOneMenu>
+                            </f:facet>
+                        </p:cellEditor>
                     </p:column>
 
-                    <p:column exportable="false" headerText="Edit" width="50px">
-                        <p:commandButton icon="pi pi-pencil" update=":form:manage-product-content"
-                                         oncomplete="PF('manageProductDialog').show()"
-                                         styleClass="rounded-button ui-button-secondary ui-button-outlined" process="@this">
-                            <f:setPropertyActionListener value="#{product}" target="#{productView.selectedProduct}"/>
-                            <p:resetInput target=":form:manage-product-content"/>
-                        </p:commandButton>
+                    <p:column style="width:6rem">
+                        <p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
                     </p:column>
 
                 </p:dataTable>
@@ -128,28 +203,28 @@
                 <p:dialog header="Product Details" showEffect="fade" modal="true" width="700" resizable="false"
                           widgetVar="manageProductDialog" responsive="true">
                     <p:outputPanel id="manage-product-content" styleClass="ui-fluid">
-                        <p:outputPanel rendered="#{not empty productView.selectedProduct}">
+                        <p:outputPanel rendered="#{not empty productView.newProduct}">
                             <div class="p-form grid p-grid">
                                 <div class="p-field p-col-12 p-md-4">
                                     <p:outputLabel for="code">Product Code</p:outputLabel>
-                                    <p:inputText id="code" value="#{productView.selectedProduct.productCode}"/>
+                                    <p:inputText id="code" value="#{productView.newProduct.productCode}"/>
                                 </div>
                                 <div class="p-field p-col-12 p-md-8">
                                     <p:outputLabel for="name">Name</p:outputLabel>
-                                    <p:inputText id="name" value="#{productView.selectedProduct.productName}"
+                                    <p:inputText id="name" value="#{productView.newProduct.productName}"
                                                  required="true"
                                                  requiredMessage="El nombre del producto es requerido."/>
                                 </div>
                                 <div class="p-field p-col-12">
                                     <p:outputLabel for="description">Description</p:outputLabel>
                                     <p:inputTextarea id="description"
-                                                     value="#{productView.selectedProduct.productDescription}"/>
+                                                     value="#{productView.newProduct.productDescription}"/>
                                 </div>
                                 <div class="p-field p-col-12 p-md-6">
                                     <p:outputLabel for="price-sell">Price Sell</p:outputLabel>
                                     <div class="ui-inputgroup">
                                         <div class="ui-inputgroup-addon">$</div>
-                                        <p:inputNumber id="price-sell" value="#{productView.selectedProduct.priceSell}"
+                                        <p:inputNumber id="price-sell" value="#{productView.newProduct.priceSell}"
                                                        symbol=" MX" symbolPosition="s"
                                                        decimalSeparator="." thousandSeparator=","/>
                                     </div>
@@ -158,7 +233,7 @@
                                     <p:outputLabel for="price-buy">Price Buy</p:outputLabel>
                                     <div class="ui-inputgroup">
                                         <div class="ui-inputgroup-addon">$</div>
-                                        <p:inputNumber id="price-buy" value="#{productView.selectedProduct.priceBuy}"
+                                        <p:inputNumber id="price-buy" value="#{productView.newProduct.priceBuy}"
                                                        symbol=" MX" symbolPosition="s"
                                                        decimalSeparator="." thousandSeparator=","/>
                                     </div>
@@ -166,8 +241,9 @@
                                 <div class="p-field p-col-12 p-md-6">
                                     <p:outputLabel for="@next" value="Category"/>
                                     <p:selectOneMenu id="category"
-                                                     value="#{productView.selectedProduct.productCategory}" converter="productCategoryConverter">
-                                        <f:selectItem itemLabel="Select One" itemValue="#{null}" noSelectionOption="true"/>
+                                                     value="#{productView.newProduct.productCategory}">
+                                        <f:selectItem itemLabel="Select One" itemValue="#{null}"
+                                                      noSelectionOption="true"/>
                                         <f:selectItems value="#{productView.productCategories}" var="category"
                                                        itemValue="#{category}"
                                                        itemLabel="#{category.categoryName}"/>
@@ -176,8 +252,9 @@
                                 <div class="p-field p-col-12 p-md-6">
                                     <p:outputLabel for="@next" value="Brand"/>
                                     <p:selectOneMenu id="brand"
-                                                     value="#{productView.selectedProduct.productBrand}">
-                                        <f:selectItem itemLabel="Select One" itemValue="#{null}" noSelectionOption="true"/>
+                                                     value="#{productView.newProduct.productBrand}">
+                                        <f:selectItem itemLabel="Select One" itemValue="#{null}"
+                                                      noSelectionOption="true"/>
                                         <f:selectItems value="#{productView.productBrands}" var="brand"
                                                        itemValue="${brand}"
                                                        itemLabel="#{brand.brandName}"/>
@@ -186,12 +263,12 @@
                                 <div class="p-field p-col-12 p-md-6">
                                     <p:outputLabel for="quantity">Quantity</p:outputLabel>
                                     <p:spinner id="quantity" min="0" buttons="horizontal"
-                                               value="#{productView.selectedProduct.unitsInStock}"/>
+                                               value="#{productView.newProduct.unitsInStock}"/>
                                 </div>
                                 <div class="p-field p-col-12 p-md-6">
                                     <p:outputLabel for="@next" value="Status"/>
                                     <p:selectOneMenu id="status"
-                                                     value="#{productView.selectedProduct.status}">
+                                                     value="#{productView.newProduct.status}">
                                         <f:selectItem itemLabel="Select One" itemValue="#{null}"
                                                       noSelectionOption="true"/>
                                         <f:selectItems value="#{productView.statuses}" var="status"

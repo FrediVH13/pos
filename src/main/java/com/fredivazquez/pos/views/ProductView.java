@@ -10,7 +10,7 @@ import com.fredivazquez.pos.services.ProductService;
 import lombok.Getter;
 import lombok.Setter;
 import org.primefaces.PrimeFaces;
-import org.primefaces.util.LangUtils;
+import org.primefaces.event.RowEditEvent;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -32,9 +32,7 @@ public class ProductView implements Serializable {
     private List<ProductCategory> productCategories;
     private List<ProductBrand> productBrands;
     private Status[] statuses;
-    private Product selectedProduct;
-    private List<Product> selectedProducts;
-    private List<Product> filteredProducts;
+    private Product newProduct;
     private final ProductService productService;
     private final ProductCategoryService productCategoryService;
     private final ProductBrandService productBrandService;
@@ -43,19 +41,6 @@ public class ProductView implements Serializable {
         this.productService = productService;
         this.productCategoryService = productCategoryService;
         this.productBrandService = productBrandService;
-    }
-
-    public boolean globalFilterFunction(Object value, Object filter) {
-        String filterText = (filter == null) ? null : filter.toString().trim().toLowerCase();
-        if (LangUtils.isBlank(filterText)) {
-            return true;
-        }
-        Product product = (Product) value;
-        return product.getProductCode().toLowerCase().contains(filterText)
-                || product.getProductBrand().getBrandName().toLowerCase().contains(filterText)
-                || product.getPriceBuy().toString().toLowerCase().contains(filterText)
-                || product.getPriceSell().toString().toLowerCase().contains(filterText)
-                || product.getProductCategory().getCategoryName().toLowerCase().contains(filterText);
     }
 
     @PostConstruct
@@ -67,29 +52,18 @@ public class ProductView implements Serializable {
     }
 
     public void openNew() {
-        this.selectedProduct = new Product();
+        this.newProduct = new Product();
         PrimeFaces.current().ajax().update("form:manage-product-content");
     }
 
     public void saveProduct() {
         Product product;
-        if (this.selectedProduct.getProductId() == null) {
-            product = this.productService.saveProduct(selectedProduct);
+        if (this.newProduct.getProductId() == null) {
+            product = this.productService.saveProduct(newProduct);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Product Added", product.toString()));
-        } else {
-            product = this.productService.updateProduct(selectedProduct, selectedProduct.getProductId());
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Product Updated", product.toString()));
         }
         this.products = this.productService.getProducts();
         PrimeFaces.current().executeScript("PF('manageProductDialog').hide()");
-        PrimeFaces.current().ajax().update("form:messages", "form:dt-products");
-    }
-
-    public void deleteProduct() {
-        this.productService.deleteProduct(selectedProduct);
-        this.products.remove(this.selectedProduct);
-        this.selectedProduct = null;
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Product Removed"));
         PrimeFaces.current().ajax().update("form:messages", "form:dt-products");
     }
 
@@ -119,4 +93,11 @@ public class ProductView implements Serializable {
         return Status.values();
     }
 
+    public void onRowEdit(RowEditEvent<Product> event) {
+
+    }
+
+    public void onRowCancel(RowEditEvent<Product> event) {
+
+    }
 }

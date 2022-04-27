@@ -6,13 +6,13 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "payment_methods")
+@Table(name = "roles")
 @Getter
 @Setter
 @ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class PaymentMethod implements Serializable {
+public class Role implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +21,4 @@ public class PaymentMethod implements Serializable {
 
     @Column(name = "name", nullable = false)
     private String name;
-
-    @Column(name = "status", nullable = false)
-    private boolean status;
 }

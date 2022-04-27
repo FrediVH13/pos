@@ -1,9 +1,12 @@
 package com.fredivazquez.pos.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Set;
 
 @Entity
 @Table(name = "products")
@@ -16,23 +19,26 @@ public class Product implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "product_id", nullable = false)
-    private Long productId;
+    @Column(name = "id", nullable = false)
+    private Long id;
 
-    @Column(name = "product_code", nullable = false, unique = true)
-    private String productCode;
+    @Column(name = "image")
+    private String image;
 
-    @Column(name = "product_name", nullable = false)
-    private String productName;
+    @Column(name = "code", unique = true)
+    private String code;
 
-    @Column(name = "product_description")
-    private String productDescription;
+    @Column(name = "name", nullable = false)
+    private String name;
 
-    @Column(name = "price_sell")
-    private Double priceSell;
+    @Column(name = "sale_price")
+    private Double salePrice;
 
-    @Column(name = "price_buy")
-    private Double priceBuy;
+    @Column(name = "purchase_price")
+    private Double purchasePrice;
+
+    @Column(name = "wholesale_price")
+    private Double wholesalePrice;
 
     @Column(name = "units_in_stock", nullable = false)
     private int unitsInStock;
@@ -42,21 +48,12 @@ public class Product implements Serializable {
     private Status status;
 
     @ManyToOne
-    @JoinColumn(name = "product_brand_id")
-    private ProductBrand productBrand;
-
-    @ManyToOne
     @JoinColumn(name = "product_category_id")
     private ProductCategory productCategory;
 
-    public Product(String productCode, String productName, String productDescription, Double priceSell, Double priceBuy, int unitsInStock, ProductBrand productBrand, ProductCategory productCategory) {
-        this.productCode = productCode;
-        this.productName = productName;
-        this.productDescription = productDescription;
-        this.priceSell = priceSell;
-        this.priceBuy = priceBuy;
-        this.unitsInStock = unitsInStock;
-        this.productBrand = productBrand;
-        this.productCategory = productCategory;
-    }
+    @OneToMany(mappedBy = "product")
+    @ToString.Exclude
+    @JsonManagedReference
+    private Set<ProductTag> productTags;
+
 }

@@ -2,12 +2,7 @@ package com.fredivazquez.pos.models;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Table;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import java.io.Serializable;
 
@@ -22,8 +17,8 @@ public class Customer implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "customer_id", nullable = false)
-    private Long customerId;
+    @Column(name = "id", nullable = false)
+    private Long id;
 
     @Column(name = "name", nullable = false)
     private String name;

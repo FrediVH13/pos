@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface ProductCategoryService {
     ProductCategory saveProductCategory(ProductCategory category);
+
     List<ProductCategory> getProductCategories();
-    ProductCategory getProductCategoryByName(String categoryName);
+
+    ProductCategory getProductCategory(Long id);
 }

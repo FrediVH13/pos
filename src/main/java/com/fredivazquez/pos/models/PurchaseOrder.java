@@ -17,8 +17,8 @@ import java.util.Set;
 public class PurchaseOrder implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "purchase_order_id", nullable = false)
-    private Long purchaseOrderId;
+    @Column(name = "id", nullable = false)
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "supplier_id", nullable = false)

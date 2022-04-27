@@ -6,15 +6,16 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Set;
 
 @Entity
-@Table(name = "product_categories")
+@Table(name = "product_departments")
 @Getter
 @Setter
 @ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class ProductCategory implements Serializable {
+public class ProductDepartment implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -23,9 +24,9 @@ public class ProductCategory implements Serializable {
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "product_department_id", nullable = false)
-    @JsonManagedReference
-    private ProductDepartment productDepartment;
+    @OneToMany(mappedBy = "productDepartment", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @JsonBackReference
+    private Set<ProductCategory> productCategories;
 
 }

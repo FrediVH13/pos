@@ -3,10 +3,12 @@ package com.fredivazquez.pos.services;
 import com.fredivazquez.pos.exceptions.PosException;
 import com.fredivazquez.pos.models.Product;
 import com.fredivazquez.pos.repository.ProductRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class ProductServiceImpl implements ProductService {
 
@@ -24,22 +26,23 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product updateProduct(Product newProduct, Long id) {
         return productRepository.findById(id).map(product -> {
-            product.setProductCode(newProduct.getProductCode());
+            product.setCode(newProduct.getCode());
+            product.setImage(newProduct.getImage());
             product.setProductCategory(newProduct.getProductCategory());
-            product.setProductBrand(newProduct.getProductBrand());
-            product.setProductName(newProduct.getProductName());
-            product.setProductDescription(newProduct.getProductDescription());
-            product.setPriceBuy(newProduct.getPriceBuy());
-            product.setPriceSell(newProduct.getPriceSell());
+            product.setName(newProduct.getName());
+            product.setPurchasePrice(newProduct.getPurchasePrice());
+            product.setSalePrice(newProduct.getSalePrice());
+            product.setWholesalePrice(newProduct.getWholesalePrice());
             product.setUnitsInStock(newProduct.getUnitsInStock());
             product.setStatus(newProduct.getStatus());
+            log.info("ProductString: " + newProduct);
             return productRepository.save(product);
-        }).orElseGet(() -> productRepository.save(newProduct));
+        }).orElseThrow(() -> new PosException(id));
     }
 
     @Override
     public List<Product> getProducts() {
-        return productRepository.findAll();
+        return productRepository.findAllByOrderByNameAsc();
     }
 
     @Override

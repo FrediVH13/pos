@@ -1,18 +1,21 @@
 package com.fredivazquez.pos.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "order_lines")
+@Table(name = "product_tags")
 @Getter
 @Setter
 @ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class OrderLine implements Serializable {
+public class ProductTag implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -20,19 +23,12 @@ public class OrderLine implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "product_id")
+    @JsonBackReference
     private Product product;
 
-    @Column(name = "unit_price", nullable = false)
-    private double unitPrice;
-
-    @Column(name = "quantity", nullable = false)
-    private int quantity;
-
-    @Column(name = "sub_total", nullable = false)
-    private double subTotal;
-
     @ManyToOne
-    @JoinColumn(name = "order_id", nullable = false)
-    private Order order;
+    @JoinColumn(name = "tag_id")
+    @JsonManagedReference
+    private Tag tag;
 
 }

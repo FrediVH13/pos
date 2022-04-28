@@ -51,6 +51,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public Product getProduct(String code) {
+        return productRepository.findByCodeLike(code);
+    }
+
+    @Override
     public void deleteProduct(Product product) {
         productRepository.delete(product);
     }

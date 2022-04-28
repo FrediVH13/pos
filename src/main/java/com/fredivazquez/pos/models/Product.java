@@ -41,11 +41,11 @@ public class Product implements Serializable {
     private Double wholesalePrice;
 
     @Column(name = "units_in_stock", nullable = false)
-    private int unitsInStock;
+    private int unitsInStock = 0;
 
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private Status status = Status.OUT_OF_STOCK;
 
     @ManyToOne
     @JoinColumn(name = "product_category_id")

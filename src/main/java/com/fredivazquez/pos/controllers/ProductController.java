@@ -2,6 +2,7 @@ package com.fredivazquez.pos.controllers;
 
 import com.fredivazquez.pos.models.Product;
 import com.fredivazquez.pos.services.ProductService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,6 +14,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @RestController
 @RequestMapping("products")
 public class ProductController {
@@ -21,6 +23,12 @@ public class ProductController {
 
     public ProductController(ProductService service) {
         this.service = service;
+    }
+
+    @GetMapping("/{code}")
+    public Product getProduct(@PathVariable(name = "code") String code) {
+        log.info("code: " + code);
+        return service.getProduct(code);
     }
 
     @GetMapping

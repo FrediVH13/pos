@@ -13,5 +13,7 @@ public interface ProductService {
 
     Product getProduct(Long id);
 
+    Product getProduct(String code);
+
     void deleteProduct(Product product);
 }

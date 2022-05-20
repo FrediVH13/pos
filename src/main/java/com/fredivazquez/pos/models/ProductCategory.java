@@ -1,7 +1,6 @@
 package com.fredivazquez.pos.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -25,7 +24,7 @@ public class ProductCategory implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "product_department_id", nullable = false)
-    @JsonManagedReference
+    @JsonBackReference
     private ProductDepartment productDepartment;
 
 }

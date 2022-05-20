@@ -1,6 +1,5 @@
 package com.fredivazquez.pos.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
@@ -26,7 +25,7 @@ public class ProductDepartment implements Serializable {
 
     @OneToMany(mappedBy = "productDepartment", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @ToString.Exclude
-    @JsonBackReference
+    @JsonManagedReference
     private Set<ProductCategory> productCategories;
 
 }

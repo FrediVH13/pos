@@ -26,15 +26,15 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product updateProduct(Product newProduct, Long id) {
         return productRepository.findById(id).map(product -> {
-            product.setCode(newProduct.getCode());
             product.setImage(newProduct.getImage());
-            product.setProductCategory(newProduct.getProductCategory());
+            product.setCode(newProduct.getCode());
             product.setName(newProduct.getName());
-            product.setPurchasePrice(newProduct.getPurchasePrice());
             product.setSalePrice(newProduct.getSalePrice());
+            product.setPurchasePrice(newProduct.getPurchasePrice());
             product.setWholesalePrice(newProduct.getWholesalePrice());
             product.setUnitsInStock(newProduct.getUnitsInStock());
             product.setStatus(newProduct.getStatus());
+            product.setProductCategory(newProduct.getProductCategory());
             log.info("ProductString: " + newProduct);
             return productRepository.save(product);
         }).orElseThrow(() -> new PosException(id));

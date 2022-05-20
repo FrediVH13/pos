@@ -1,12 +1,9 @@
 package com.fredivazquez.pos.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Set;
 
 @Entity
 @Table(name = "products")
@@ -41,19 +38,14 @@ public class Product implements Serializable {
     private Double wholesalePrice;
 
     @Column(name = "units_in_stock", nullable = false)
-    private int unitsInStock = 0;
+    private int unitsInStock;
 
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
-    private Status status = Status.OUT_OF_STOCK;
+    private Status status;
 
     @ManyToOne
     @JoinColumn(name = "product_category_id")
     private ProductCategory productCategory;
-
-    @OneToMany(mappedBy = "product")
-    @ToString.Exclude
-    @JsonManagedReference
-    private Set<ProductTag> productTags;
 
 }

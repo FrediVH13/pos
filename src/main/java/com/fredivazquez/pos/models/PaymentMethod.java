@@ -19,6 +19,9 @@ public class PaymentMethod implements Serializable {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @Column(name = "key")
+    private String key;
+
     @Column(name = "name", nullable = false)
     private String name;
 

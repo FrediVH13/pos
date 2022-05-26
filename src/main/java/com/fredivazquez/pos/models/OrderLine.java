@@ -31,8 +31,4 @@ public class OrderLine implements Serializable {
     @Column(name = "sub_total", nullable = false)
     private double subTotal;
 
-    @ManyToOne
-    @JoinColumn(name = "order_id", nullable = false)
-    private Order order;
-
 }

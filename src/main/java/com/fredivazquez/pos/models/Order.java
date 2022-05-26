@@ -4,7 +4,9 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -42,8 +44,9 @@ public class Order implements Serializable {
     @Column(name = "order_date", nullable = false)
     private Date orderDate;
 
-    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_id")
     @ToString.Exclude
-    private Set<OrderLine> orderLines;
+    private List<OrderLine> orderLines = new ArrayList<>();
 
 }
